@@ -1,0 +1,5 @@
+
+
+const JWT_KEY = "your_jwt_secret_key";
+
+export { JWT_KEY };
