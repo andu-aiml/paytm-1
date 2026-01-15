@@ -3,7 +3,7 @@ import  Heading  from "../components/Heading";
 import  InputBox  from "../components/Inputbox";
 import  Button  from "../components/Button";
 
-export function SendMoney() {
+export default function SendMoney() {
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
       <Card>

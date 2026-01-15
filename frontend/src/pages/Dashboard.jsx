@@ -1,6 +1,6 @@
 import  AppBar  from "../components/Appbar";
 
-export function Dashboard() {
+export default function Dashboard() {
   return (
     <div className="min-h-screen">
       <AppBar />
