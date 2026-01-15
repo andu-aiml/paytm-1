@@ -1,10 +1,11 @@
-const express = require('express');
+import express from "express";
 const app = express();
 import * as z from "zod"
-import { Account, User } from "../db";
-const jwt = require('jsonwebtoken');
-import { JWT_KEY } from '../config';
-import { authMiddleware } from '../middilware'
+import { Account, User } from "../db.js";
+import jwt from 'jsonwebtoken';
+import { JWT_KEY } from '../config.js';
+import authMiddileware from "../middileware.js";
+
 
 const userSchema = z.object({
     userName: z.string(),
@@ -31,15 +32,15 @@ async function isAvailable(req ,res, next){
 }
 
 
-const user = express.Router();
+export const user = express.Router();
 
-user.post('/signup', validation,isAvailable,(req,res) => {
+user.post('/signup', validation,isAvailable,async (req,res) => {
     const { userName, firstName, lastName, password } = req.body;
     User.create({ userName, firstName, lastName, password })
-        .then(user => {
-            const token = jwt.sign({ id: user._id }, 'secret');
-            res.status(201).json({ message: "User created successfully", token:token });
-            Account.create({userId : user._id, balance : 1+math.random()*10000})
+        .then(async (user) => {
+            const token = jwt.sign({ id: user._id }, JWT_KEY);
+            res.status(201).json({ message: "User created successfully", token: token });
+            await Account.create({ userId: user._id, balance: 1 + Math.random() * 10000 });
         })
         .catch(err => {
             res.status(500).json({ message: "Internal server error" });
@@ -52,27 +53,27 @@ user.post('/signin',validation, async (req, res) => {
     const password = req.body.password;
     
 
-    userFound = await User.findOne({ userName: username, password : password });
+    const userFound = await User.findOne({ userName: username, password : password });
     if (!userFound) {
         return res.status(411).json({ message: "Error while logging in.." });
     }
 
-    const token = jwt.sign({ id: user._id }, JWT_KEY);
+    const token = jwt.sign({ id: userFound._id }, JWT_KEY);
     res.status(200).json({ message: "Signin successful", token: token });    
 }
 );
 
-user.post('/', authMiddleware, validation, async (req, res) =>{
+user.post('/', authMiddileware, validation, async (req, res) =>{
     const firstname = req.body.firstName;
     const lastname = req.body.lastName;
     const password = req.body.password;
 
     try{
-        User.updateOne({_id : req.userid},{firstName : firstname, lastName: lastname, password : password})
+        await User.updateOne({_id : req.userid},{firstName : firstname, lastName: lastname, password : password});
+        res.status(200).json({message : "User updated successfully"});
     }catch(error){
         res.status(500).json({message : "internal server error"})
     }
 });
 
 
-module.exports = { user };

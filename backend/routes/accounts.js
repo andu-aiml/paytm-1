@@ -1,13 +1,13 @@
-const express = require('express');
+import express from 'express'
 import { Account } from '../db.js';
-import { authMiddleware } from '../middilware.js';
+import authMiddleware from '../middileware.js';
 
-const accounts = express.Router();
+export const accounts = express.Router();
 
 
 accounts.get('/balance', authMiddleware ,async (req, res) =>{
-    acc = await Account.findOne({userId : req.userId});
-    res.json({balance : acc.balance});
+    const acc = await Account.findOne({userId : req.userId});
+    res.json({balance : JSON.stringify(acc.balance)});
 });
 
 accounts.post('/transfer', authMiddleware , async (req, res) =>{
@@ -18,18 +18,18 @@ accounts.post('/transfer', authMiddleware , async (req, res) =>{
     if (fromAccount.balance < amount){
         return res.status(411).json({message : "Insufficient balance"});
     }else{
-        toAccount = await Account.findOne({userId : toUserId});
+        const toAccount = await Account.findOne({userId : toUserId});
         if (!toAccount){
             return res.status(411).json({message : "Recipient account not found"});
         }
-        Account.updateOne({userId : req.userId}, {$inc : {balance : -amount}});
-        Account.updateOne({userId : toUserId}, {$inc : {balance : amount}});
+        await Account.updateOne({userId : req.userId}, {$inc : {balance : -amount}});
+        await Account.updateOne({userId : toUserId}, {$inc : {balance : amount}});
         res.json({message : "Transfer successful"});
     }
 
 });
 
-module.exports = { accounts };
+
 
 
 
