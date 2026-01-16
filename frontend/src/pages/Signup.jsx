@@ -4,12 +4,12 @@ import  Subheading  from "../components/Subheading";
 import  InputBox  from "../components/Inputbox";
 import  Button  from "../components/Button";
 import axios from "axios";
-import { useState, onChange, onClick } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate,Link } from "react-router-dom";
 
 export default function Signup() {
 
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [firstName, setfirstName] = useState("");
   const [lastName, setlastName] = useState("");
@@ -37,14 +37,14 @@ export default function Signup() {
             password
           }).then((res)=>{
             localStorage.setItem("token", res.data.token);
-            Navigate("/dashboard");
+            navigate("/dashboard");
           }).catch((err)=>{
             console.log(err);
           })
             }} label="Sign Up" />
 
         <p className="text-sm text-center mt-3">
-          Already have an account? <span className="underline cursor-pointer">Login</span>
+          Already have an account? <Link to="/signin" className="underline cursor-pointer">Login</Link>
         </p>
       </Card>
     </div>

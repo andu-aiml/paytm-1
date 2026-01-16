@@ -8,7 +8,7 @@ import authMiddileware from "../middileware.js";
 
 
 const userSchema = z.object({
-    userName: z.string(),
+    userName: z.string().email(),
     firstName: z.string(),
     lastName: z.string(),
     password: z.string()
@@ -48,7 +48,7 @@ user.post('/signup', validation,isAvailable,async (req,res) => {
 })
 
 
-user.post('/signin',validation, async (req, res) => {
+user.post('/signin', async (req, res) => {
     const username = req.body.userName;
     const password = req.body.password;
     
@@ -77,3 +77,22 @@ user.post('/', authMiddileware, validation, async (req, res) =>{
 });
 
 
+user.get('/all', authMiddileware, async (req, res) =>{
+    const search = req.query.search || "";
+    try {
+        const users = await User.find({'userName' : new RegExp(search, 'i')});
+        res.status(200).json(users.filter(user => user._id != req.userId));
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
+user.get('/me', authMiddileware, async (req, res) =>{
+
+    try {
+        const user = await User.findById(req.userId);
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error" });
+    }
+});

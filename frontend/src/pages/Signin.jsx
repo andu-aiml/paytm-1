@@ -5,7 +5,7 @@ import  InputBox  from "../components/Inputbox";
 import  Button  from "../components/Button";
 import axios from "axios";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 
 export default function Signin() {
   const [userName, setuserName] = useState("");
@@ -37,7 +37,7 @@ export default function Signin() {
         }} label="Sign In" />
 
         <p className="text-sm text-center mt-3">
-          Don&apos;t have an account? <span className="underline cursor-pointer">Sign Up</span>
+          Don&apos;t have an account? <Link to="/signup" className="underline cursor-pointer">Sign Up</Link>
         </p>
       </Card>
     </div>

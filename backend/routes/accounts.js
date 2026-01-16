@@ -7,7 +7,7 @@ export const accounts = express.Router();
 
 accounts.get('/balance', authMiddleware ,async (req, res) =>{
     const acc = await Account.findOne({userId : req.userId});
-    res.json({balance : JSON.stringify(acc.balance)});
+    res.json({balance : acc.balance});
 });
 
 accounts.post('/transfer', authMiddleware , async (req, res) =>{
